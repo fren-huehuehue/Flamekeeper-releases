@@ -47,15 +47,19 @@ To remove Flamekeeper, go to Windows Settings > Apps > Flamekeeper > Uninstall. 
 ## Server tab
 
 - **Start / Stop / Restart.** Stop sends Ctrl+C, so the server saves before it closes. If it hasn't stopped after 30
-  seconds, Flamekeeper asks whether to force it.
+  seconds, Flamekeeper asks whether to force it. With Discord set up, Stop first asks how long the server stays down
+  (players see "back around 14:30") and whether to stop now or in some minutes, with warnings in Discord.
+- **Later** plans a restart in some minutes. Discord gets a message right away and warnings 30, 15, 5 and 1 minute
+  before it. **Cancel** under the buttons drops a planned restart or stop.
 - **Update via SteamCMD** installs the newest server version. The server has to be stopped for this; Flamekeeper
   offers to stop it.
 - **Players online** shows who is in the game. Flamekeeper reads this from the server log. Enshrouded has no kick
   command, so **Ban** puts a player on the ban list; the ban works after a restart.
 - **Server Message** posts a message in your Discord channel, for example "the server restarts in 5 minutes". The
   game itself can't show messages to players. This box appears once Discord is set up (see
-  [Discord channel](#discord-channel)). **Ping with a Server Message** sets who gets pinged, and a switch turns the
-  join and leave messages on or off.
+  [Discord channel](#discord-channel)). Switch on **@here** to ping everyone online in the channel; other pings are
+  set in Settings > Discord. With the bot you can also make the message a **Poll** (✅ / ❌ under it; who clicked what
+  shows under **Recent**) or **Pin it**. **Recent** lists your last messages; the bin deletes one from Discord.
 - **Activity** lists what Flamekeeper did. **Server log** shows the server's own log. If the server quits on its own,
   Activity shows the important log lines and common causes.
 
@@ -86,7 +90,7 @@ Menu (☰) > **Settings** holds the settings of the PC that runs the server (als
   Flamekeeper to new versions before they are released, for trying them out first.
 - **Backups**: the backup folder, how many automatic backups to keep, how often to make them, and whether to make one
   after every stop.
-- **Discord**: the webhook, see [Discord channel](#discord-channel).
+- **Discord**: webhook or bot, see [Discord channel](#discord-channel).
 
 ## Discord channel
 
@@ -100,11 +104,19 @@ Enshrouded can't send messages to players. Instead, Flamekeeper can post server 
 - mods switched on, off, added or removed
 - players joining and leaving (switch it off under Settings > Discord)
 
-To set it up in Discord, open the channel's settings > **Integrations** > **Webhooks** > **New Webhook** >
+**Webhook or bot** (Settings > Discord > Send through). You can switch at any time; Flamekeeper first lists what stops
+working and what comes, and keeps both setups so switching back is one click.
+
+- **Webhook**: simple, one URL. Flamekeeper can only post (and delete its own Server Messages).
+- **Bot**: everything a webhook does, plus a pinned **status message** that keeps itself up to date (online or offline,
+  who plays, when it is back), `!settings` and the other commands typed in Discord, polls with ✅ / ❌, pings picked
+  from your Discord roles, and pinning messages.
+
+To set up a webhook in Discord, open the channel's settings > **Integrations** > **Webhooks** > **New Webhook** >
 **Copy Webhook URL**. In Flamekeeper, go to the menu (☰) > **Settings** > **Discord**, paste it under Webhook and click
 **Test and save**. A test message shows up in the channel. To turn Discord off, clear the field and click **Turn off**.
 
-**Ping with a Server Message** (on the Server tab) sets who a Server Message pings. Discord can't ping by name, so use `@here` (everyone
+**Server Messages ping** (in Settings > Discord, once Discord is on) sets who a Server Message pings; `@here` can also be switched on the Server tab. With the bot you pick `@here`, `@everyone` or roles. With a webhook, Discord can't ping by name, so use `@here` (everyone
 online in the channel), `@everyone`, or IDs. Switch on Developer Mode in Discord (Settings > Advanced). Then right-click
 a member > **Copy User ID**, or right-click a role > **Copy Role ID** and put `&` in front of it. A role such as
 "Enshrouded" pings a whole group. Leave the field empty to ping nobody.
@@ -126,12 +138,13 @@ they played.
 - `!mods`: the mods that are switched on, and which ones players need too
 - `!power`: what each group (Admin, Friend, ...) may do in the game
 
-**Bot (optional)**: so players can type those commands in Discord themselves. A webhook can only post, so this needs a
-Discord bot. At [discord.com/developers/applications](https://discord.com/developers/applications): **New Application**,
+**Bot**: so players can type those commands in Discord themselves, and for the status message, polls and role pings. At [discord.com/developers/applications](https://discord.com/developers/applications): **New Application**,
 then **Bot** > **Reset Token** > **Copy**, and switch on **Message Content Intent** on the same page. Then **OAuth2** >
-**URL Generator**: tick the scopes `bot` and `applications.commands` and the permissions View Channels, Send Messages
-and Read Message History, open the URL at the bottom and add the bot to your Discord server. In Flamekeeper, paste the
-token under Settings > Discord > **Bot token** and click **Test and save**. The bot answers `!settings`, `!players`,
+**URL Generator**: tick the scopes `bot` and `applications.commands` and the permissions View Channels, Send Messages,
+Embed Links, Add Reactions, Read Message History and Pin Messages, open the URL at the bottom and add the bot to your
+Discord server. In Flamekeeper, choose **Bot** under Settings > Discord, paste the token under **Bot token** and the
+channel under **Channel ID** (Developer Mode on, right-click the channel > **Copy Channel ID**; leave it empty to use
+the webhook's channel), and click **Test and save**. A test message shows up in the channel. The bot answers `!settings`, `!players`,
 `!mods` and `!power`, and also `/settings`, `/players`, `/mods` and `/power` (those work even without Message
 Content Intent).
 
@@ -146,21 +159,32 @@ Mods use the community mod loader [EML](https://github.com/Brabb3l/kfc-parser) (
    If you add a newer version of a mod, it replaces the old one.
 3. Switch mods on and off with their switch. Mods load when the server starts, so restart it afterwards.
 
-Before each change, Flamekeeper makes a backup. Tick **Players need it** for mods that players must also install on
-their own PC. **Turn off mods** removes EML and has SteamCMD check the game files, so you get a normal server back.
+Before each change, Flamekeeper makes a backup.
+
+**Players need it**: click the **person icon** next to a mod when players must install it on their own PC too (a mod
+that changes what they see). The icon turns yellow; hover it to see what it means, click it again to undo. `!mods` and
+the Discord message when such a mod is switched on tell players they need it. Mods that only change the server's data (like the tweaks below) leave it grey.
+
+**Turn off mods** removes EML and has SteamCMD check the game files, so you get a normal server back.
 
 **Tweaks** (on the Mods tab) are server-side changes that Flamekeeper adds as its own small mods (`mods\flamekeeper-*`),
 so EML must be installed, but players do not need to install anything:
 
-- **Bigger stacks**: every stackable item holds 2, 3, 5 or 10 times as much per slot. Gear does not stack and stays at one.
-  What the game does with stacks that already grew bigger after going back to Normal is not known yet, so keep the
-  backup Flamekeeper makes before the change.
-- **Faster crafting**: smelter, kiln, loom and other timed recipes finish 2, 3 or 5 times as fast, on top of the
-  factory speed setting.
-- **More chest slots**: chests you build from now on get twice the slots. Chests already placed keep their size until
-  you take them down and build them again.
+- **Bigger stacks** (slider 1x to 10x): every stackable item holds that much more per slot. Gear does not stack and
+  stays at one. What the game does with stacks that already grew bigger after going back to Normal is not known yet, so
+  keep the backup Flamekeeper makes before the change.
+- **Faster crafting** (slider 1x to 5x): smelter, kiln, loom and other timed recipes finish that much faster, on top of
+  the factory speed setting.
+- **More chest slots** (Normal or Double the size): chests you build from now on get twice the slots. Chests already
+  placed keep their size until you take them down and build them again.
+- **Faster fishing** (slider 1x to 2x): the fish's bar fills that much faster when you steer against it, fish bite that
+  much sooner and you get that much more time to click. Fish with several rounds may get fewer. Works on top of Fishing
+  on the World tab.
+- **Better catches** (slider 1x to 2x): legendary fish come up that much more often, lower rarities a bit less (at 2x:
+  epic 1.75x, rare 1.5x, uncommon 1.25x). Shoes and junk come up that many times less, and junk you do catch holds
+  better items the same way.
 
-**Normal** takes a tweak's mod out again. Tweaks apply when the server starts.
+Sliders move in steps of 0.05 and apply when you let go. **Normal** (1x) takes a tweak's mod out again. Tweaks apply when the server starts.
 
 ## Backups
 
