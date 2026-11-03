@@ -142,11 +142,13 @@ they played.
 then **Bot** > **Reset Token** > **Copy**, and switch on **Message Content Intent** on the same page. Then **OAuth2** >
 **URL Generator**: tick the scopes `bot` and `applications.commands` and the permissions View Channels, Send Messages,
 Embed Links, Add Reactions, Read Message History and Pin Messages, open the URL at the bottom and add the bot to your
-Discord server. In Flamekeeper, choose **Bot** under Settings > Discord, paste the token under **Bot token** and the
-channel under **Channel ID** (Developer Mode on, right-click the channel > **Copy Channel ID**; leave it empty to use
-the webhook's channel), and click **Test and save**. A test message shows up in the channel. The bot answers `!settings`, `!players`,
+Discord server. In Flamekeeper, choose **Bot** under Settings > Discord, paste the token under **Bot token**, pick the
+channel under **Channel**, and click **Test and save**. A test message shows up in the channel. If the list cannot load,
+you get a **Channel ID** field instead: in Discord, Settings > Advanced > Developer Mode on, then right-click the channel
+> **Copy Channel ID** (empty: the webhook's channel). A channel you deleted or cloned is a new channel to Discord: the
+list then says **Channel not found**, so pick the new one. The bot answers `!settings`, `!players`,
 `!mods` and `!power`, and also `/settings`, `/players`, `/mods` and `/power` (those work even without Message
-Content Intent).
+Content Intent). In Discord, `/mods` and `!mods` also ask you for the mods as a zip (see [Mods](#mods)).
 
 Flamekeeper on the server's PC sends these messages and runs the bot, so it has to be running there.
 
@@ -164,6 +166,16 @@ Before each change, Flamekeeper makes a backup.
 **Players need it**: click the **person icon** next to a mod when players must install it on their own PC too (a mod
 that changes what they see). The icon turns yellow; hover it to see what it means, click it again to undo. `!mods` and
 the Discord message when such a mod is switched on tell players they need it. Mods that only change the server's data (like the tweaks below) leave it grey.
+
+**Zip all mods** puts EML and every switched on mod in one zip, with `dbghelp.dll` and a `mods` folder at the top, and
+asks where to save it. Unzipped in the Enshrouded folder, everything lands in the right place. `EML-LICENSE.txt` goes
+along: EML's license and where its source code is. Flamekeeper's own tweaks stay out, they work on the server alone.
+
+**Asking for the mods in Discord** (needs the bot): when a player types `/mods` or `!mods`, the bot lists the mods and
+asks you for them as a zip. The Mods tab then shows a count and the request, and the taskbar flashes. **Approve** sends
+the zip to that player by DM, **Deny** tells them no. Nothing is sent before you approve. A bot can send at most 10 MB;
+for a larger zip, the player is told you will share it another way, so use **Zip all mods** and send it yourself. Check
+that a mod's author allows sharing it before you approve.
 
 **Turn off mods** removes EML and has SteamCMD check the game files, so you get a normal server back.
 
